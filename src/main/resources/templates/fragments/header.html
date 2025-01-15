@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+</head>
+<body>
+    <header class="header" th:fragment="header">
+        <nav class="nav-container">
+            <div class="logo">
+                <h1><a href="/shop">E-Ticaret</a></h1>
+            </div>
+            
+            <div class="search-bar">
+                <form th:action="@{/shop/products/search}" method="get">
+                    <input type="text" name="query" th:value="${searchQuery}" placeholder="Ürün ara...">
+                    <button type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+            
+            <div class="nav-buttons">
+                <a href="/shop/cart" class="btn">
+                    <i class="fas fa-shopping-cart"></i> 
+                    Sepet
+                    <span th:if="${cartItemCount != null}" 
+                          th:text="${'(' + cartItemCount + ')'}"
+                          class="cart-count"></span>
+                </a>
+                
+                <!-- Giriş yapmamış kullanıcılar için -->
+                <div sec:authorize="isAnonymous()">
+                    <a href="/shop/login" class="btn">
+                        <i class="fas fa-user"></i> Giriş Yap
+                    </a>
+                    <a href="/shop/register" class="btn">
+                        <i class="fas fa-user-plus"></i> Kayıt Ol
+                    </a>
+                </div>
+                
+                <!-- Giriş yapmış kullanıcılar için -->
+                <div sec:authorize="isAuthenticated()" class="dropdown">
+                    <button class="btn dropdown-toggle">
+                        <i class="fas fa-user"></i> 
+                        <span sec:authentication="name">Kullanıcı</span>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="/shop/profile">
+                            <i class="fas fa-user-circle"></i> Profilim
+                        </a>
+                        <a href="/shop/orders">
+                            <i class="fas fa-shopping-bag"></i> Siparişlerim
+                        </a>
+                        <form th:action="@{/logout}" method="post">
+                            <button type="submit" class="btn-link">
+                                <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Admin için ek menü -->
+                <div sec:authorize="hasRole('ROLE_ADMIN')" class="dropdown">
+                    <button class="btn dropdown-toggle">
+                        <i class="fas fa-cog"></i> Admin
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="/shop/admin/products">
+                            <i class="fas fa-box"></i> Ürün Yönetimi
+                        </a>
+                        <a href="/shop/admin/orders">
+                            <i class="fas fa-list"></i> Sipariş Yönetimi
+                        </a>
+                        <a href="/shop/admin/users">
+                            <i class="fas fa-users"></i> Kullanıcı Yönetimi
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+</body>
+</html> 

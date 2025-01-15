@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Ticaret Sitesi</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header th:replace="fragments/header :: header"></header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h2>Hoş Geldiniz</h2>
+        <p>En iyi ürünler, en uygun fiyatlarla</p>
+        <a href="/shop/products" class="btn btn-primary">Alışverişe Başla</a>
+    </section>
+
+    <!-- Kategoriler -->
+    <section class="categories">
+        <div class="container">
+            <h2>Popüler Kategoriler</h2>
+            <div class="category-grid">
+                <div class="category-card">
+                    <img src="/images/electronics.jpg" alt="Elektronik">
+                    <h3>Elektronik</h3>
+                </div>
+                <div class="category-card">
+                    <img src="/images/fashion.jpg" alt="Moda">
+                    <h3>Moda</h3>
+                </div>
+                <div class="category-card">
+                    <img src="/images/home.jpg" alt="Ev & Yaşam">
+                    <h3>Ev & Yaşam</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ürünler -->
+    <section class="products">
+        <div class="container">
+            <h2>Öne Çıkan Ürünler</h2>
+            <div class="products-grid">
+                <!-- Ürün Kartı içinde -->
+                <div class="product-card" th:each="product : ${products}">
+                    <img th:src="${product.imageUrl}" th:alt="${product.name}" class="product-image">
+                    <div class="product-info">
+                        <h3 th:text="${product.name}">Ürün Adı</h3>
+                        <p class="price" th:text="${'₺' + product.price}">₺199.99</p>
+                        <form th:action="@{/shop/products/{id}/add-to-cart(id=${product.id})}" method="post">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-shopping-cart"></i> Sepete Ekle
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html> 

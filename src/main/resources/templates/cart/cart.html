@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sepetim - E-Ticaret</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+<body>
+    <header th:replace="fragments/header :: header"></header>
+
+    <div class="container">
+        <h1>Alışveriş Sepetim</h1>
+        
+        <div th:if="${cartItems == null || cartItems.empty}" class="empty-cart">
+            <p>Sepetiniz boş.</p>
+            <a href="/shop/products" class="btn btn-primary">Alışverişe Başla</a>
+        </div>
+        
+        <div th:if="${cartItems != null && !cartItems.empty}" class="cart-content">
+            <div class="cart-items">
+                <div th:each="item : ${cartItems}" class="cart-item">
+                    <img th:src="${item.product.imageUrl}" th:alt="${item.product.name}" class="product-image">
+                    <div class="item-details">
+                        <h3 th:text="${item.product.name}">Ürün Adı</h3>
+                        <p class="price" th:text="${'₺' + item.product.price}">₺199.99</p>
+                    </div>
+                    <div class="quantity-controls">
+                        <button onclick="updateQuantity(this, -1)" th:data-id="${item.id}">-</button>
+                        <input type="number" th:value="${item.quantity}" min="1" 
+                               onchange="quantityChanged(this)" th:data-id="${item.id}">
+                        <button onclick="updateQuantity(this, 1)" th:data-id="${item.id}">+</button>
+                    </div>
+                    <div class="item-total">
+                        <p th:text="${'₺' + (item.product.price * item.quantity)}">₺199.99</p>
+                    </div>
+                    <button class="remove-btn" onclick="removeItem(this)" th:data-id="${item.id}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="cart-summary">
+                <h3>Sipariş Özeti</h3>
+                <div class="summary-item">
+                    <span>Ara Toplam:</span>
+                    <span th:text="${'₺' + total}">₺199.99</span>
+                </div>
+                <div class="summary-item">
+                    <span>Kargo:</span>
+                    <span>Ücretsiz</span>
+                </div>
+                <div class="summary-item total">
+                    <span>Toplam:</span>
+                    <span th:text="${'₺' + total}">₺199.99</span>
+                </div>
+                <button class="checkout-btn">Ödemeye Geç</button>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="fragments/footer :: footer"></footer>
+
+    <script>
+    const token = document.querySelector("meta[name='_csrf']").content;
+    const header = document.querySelector("meta[name='_csrf_header']").content;
+
+    function updateQuantity(button, change) {
+        const input = button.parentElement.querySelector('input');
+        const newValue = parseInt(input.value) + change;
+        if (newValue >= 1) {
+            input.value = newValue;
+            sendUpdateRequest(input);
+        }
+    }
+
+    function quantityChanged(input) {
+        if (parseInt(input.value) < 1) {
+            input.value = 1;
+        }
+        sendUpdateRequest(input);
+    }
+
+    function sendUpdateRequest(input) {
+        const itemId = input.getAttribute('data-id');
+        const quantity = input.value;
+
+        fetch(`/shop/cart/update/${itemId}?quantity=${quantity}`, {
+            method: 'POST',
+            headers: {
+                [header]: token
+            }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Güncelleme başarısız');
+            location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Güncelleme sırasında bir hata oluştu');
+        });
+    }
+
+    function removeItem(button) {
+        const itemId = button.getAttribute('data-id');
+
+        fetch(`/shop/cart/remove/${itemId}`, {
+            method: 'POST',
+            headers: {
+                [header]: token
+            }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Silme başarısız');
+            location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Silme sırasında bir hata oluştu');
+        });
+    }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ürünler - E-Ticaret</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header th:replace="fragments/header :: header"></header>
+
+    <section class="products-section">
+        <div class="container">
+            <h2>Tüm Ürünler</h2>
+            <div class="products-grid">
+                <div th:each="product : ${products}" class="product-card">
+                    <img th:src="${product.imageUrl}" th:alt="${product.name}" class="product-image">
+                    <div class="product-info">
+                        <h3 th:text="${product.name}">Ürün Adı</h3>
+                        <p class="price" th:text="${'₺' + product.price}">₺199.99</p>
+                        <a th:href="@{'/shop/products/' + ${product.id}}" class="btn btn-secondary">Detaylar</a>
+                        <button class="btn btn-primary" 
+                                th:onclick="'addToCart(' + ${product.id} + ')'">Sepete Ekle</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer th:replace="fragments/footer :: footer"></footer>
+
+    <script>
+    function addToCart(productId) {
+        fetch('/shop/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                productId: productId,
+                quantity: 1
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert('Ürün sepete eklendi!');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Bir hata oluştu!');
+        });
+    }
+    </script>
+</body>
+</html> 

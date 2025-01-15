@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${product.name + ' - E-Ticaret'}">Ürün Detay - E-Ticaret</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+<body>
+    <header th:replace="fragments/header :: header"></header>
+
+    <section class="product-detail">
+        <div class="container">
+            <div class="product-detail-grid">
+                <div class="product-image">
+                    <img th:src="${product.imageUrl}" th:alt="${product.name}">
+                </div>
+                <div class="product-info">
+                    <h1 th:text="${product.name}">Ürün Adı</h1>
+                    <p class="price" th:text="${'₺' + product.price}">₺199.99</p>
+                    <p class="description" th:text="${product.description}">Ürün açıklaması</p>
+                    
+                    <form th:action="@{/shop/products/{id}/add-to-cart/api(id=${product.id})}" method="post" class="add-to-cart-form">
+                        <div class="quantity-selector">
+                            <button type="button" onclick="decreaseQuantity()">-</button>
+                            <input type="number" id="quantity" name="quantity" value="1" min="1">
+                            <button type="button" onclick="increaseQuantity()">+</button>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-shopping-cart"></i> Sepete Ekle
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer th:replace="fragments/footer :: footer"></footer>
+
+    <script th:inline="javascript">
+        const token = document.querySelector("meta[name='_csrf']").content;
+        const header = document.querySelector("meta[name='_csrf_header']").content;
+
+        function decreaseQuantity() {
+            var input = document.getElementById('quantity');
+            var value = parseInt(input.value);
+            if (value > 1) {
+                input.value = value - 1;
+            }
+        }
+
+        function increaseQuantity() {
+            var input = document.getElementById('quantity');
+            input.value = parseInt(input.value) + 1;
+        }
+
+        function addToCart(productId) {
+            const quantity = document.getElementById('quantity').value;
+            
+            fetch(`/shop/products/${productId}/add-to-cart?quantity=${quantity}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [header]: token
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        window.location.href = '/shop/login';
+                        return;
+                    }
+                    throw new Error('Sepete ekleme başarısız');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.message) {
+                    alert(data.message);
+                    // Sepet sayısını güncelle
+                    const cartCount = document.querySelector('.cart-count');
+                    if (cartCount && data.cartItemCount) {
+                        cartCount.textContent = `(${data.cartItemCount})`;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+            });
+        }
+    </script>
+</body>
+</html> 

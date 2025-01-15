@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kayıt Ol - E-Ticaret</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header th:replace="fragments/header :: header"></header>
+
+    <div class="auth-container">
+        <h2>Kayıt Ol</h2>
+        
+        <div th:if="${error}" class="error-message" th:text="${error}"></div>
+        <div th:if="${success}" class="success-message" th:text="${success}"></div>
+        
+        <form th:action="@{/shop/register}" method="post" th:object="${registerRequest}">
+            <div class="form-group">
+                <label for="username">Kullanıcı Adı</label>
+                <input type="text" id="username" name="username" th:field="*{username}" required>
+                <span th:if="${#fields.hasErrors('username')}" class="error-message" th:errors="*{username}"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">E-posta</label>
+                <input type="email" id="email" name="email" th:field="*{email}" required>
+                <span th:if="${#fields.hasErrors('email')}" class="error-message" th:errors="*{email}"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Şifre</label>
+                <input type="password" id="password" name="password" th:field="*{password}" required>
+                <span th:if="${#fields.hasErrors('password')}" class="error-message" th:errors="*{password}"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="firstName">Ad</label>
+                <input type="text" id="firstName" name="firstName" th:field="*{firstName}" required>
+                <span th:if="${#fields.hasErrors('firstName')}" class="error-message" th:errors="*{firstName}"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="lastName">Soyad</label>
+                <input type="text" id="lastName" name="lastName" th:field="*{lastName}" required>
+                <span th:if="${#fields.hasErrors('lastName')}" class="error-message" th:errors="*{lastName}"></span>
+            </div>
+            
+            <button type="submit" class="auth-btn">Kayıt Ol</button>
+        </form>
+        
+        <div class="auth-link">
+            Zaten hesabınız var mı? <a href="/shop/login">Giriş Yap</a>
+        </div>
+    </div>
+
+    <footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html> 
