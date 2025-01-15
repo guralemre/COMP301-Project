@@ -61,7 +61,7 @@ public class DataInitializer {
             watch.setName("Apple Watch Series 9");
             watch.setDescription("45mm, Alüminyum Kasa");
             watch.setPrice(14999.99);
-            watch.setImageUrl("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/watch-case-45-aluminum-midnight-nc-s9_VW_PF_WF_SI?wid=1400&hei=1400&fmt=png-alpha&.v=1692936829206");
+            watch.setImageUrl("https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/141213-1-1_large.jpg");
             productRepository.save(watch);
 
             Product airpods = new Product();
@@ -70,6 +70,27 @@ public class DataInitializer {
             airpods.setPrice(7999.99);
             airpods.setImageUrl("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/MQD83?wid=1144&hei=1144&fmt=jpeg&qlt=90&.v=1660803972361");
             productRepository.save(airpods);
+
+            Product macMini = new Product();
+            macMini.setName("Mac Mini M2");
+            macMini.setDescription("M2 çip, 8GB RAM, 256GB SSD");
+            macMini.setPrice(19999.99);
+            macMini.setImageUrl("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/mac-mini-hero-202301?wid=904&hei=840&fmt=jpeg&qlt=90&.v=1670038314708");
+            productRepository.save(macMini);
+
+            Product airpodMax = new Product();
+            airpodMax.setName("AirPods Max");
+            airpodMax.setDescription("Uzamsal Ses, Aktif Gürültü Engelleme");
+            airpodMax.setPrice(14999.99);
+            airpodMax.setImageUrl("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/airpods-max-hero-select-202011?wid=940&hei=1112&fmt=png-alpha&.v=1604709293000");
+            productRepository.save(airpodMax);
+
+            Product ipadPro = new Product();
+            ipadPro.setName("iPad Pro M2");
+            ipadPro.setDescription("12.9-inç Liquid Retina XDR ekran, M2 çip");
+            ipadPro.setPrice(34999.99);
+            ipadPro.setImageUrl("https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/ipad-pro-13-select-wifi-spacegray-202210?wid=940&hei=1112&fmt=png-alpha&.v=1664411207213");
+            productRepository.save(ipadPro);
         };
     }
 } 
